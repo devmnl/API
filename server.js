@@ -68,9 +68,9 @@ app.delete('/usuarios/:id', async (req, res) =>{
 
 
 
-app.listen(3000, () => {
-    console.log('Servidor rodando na porta 3000')
-})
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Servidor rodando em http://0.0.0.0:${port}`);
+  });
 
 
 
