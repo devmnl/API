@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(cors({
-  origin: 'https://devclub-cadastro-usuarios.vercel.app/', // Substitua pelo domínio do seu frontend
+  origin: 'https://devclub-cadastro-usuarios.vercel.app', // Substitua pelo domínio do seu frontend
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
