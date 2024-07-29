@@ -1,77 +1,83 @@
-import express from 'express'
-import { PrismaClient } from '@prisma/client'
-import cors from 'cors'
+import express from 'express';
+import { PrismaClient } from '@prisma/client';
+import cors from 'cors';
 
-const prisma = new PrismaClient()
-
-const app = express()
+const prisma = new PrismaClient();
+const app = express();
 const port = process.env.PORT || 3000;
-app.use(express.json())
-app.use(cors())
 
+app.use(express.json());
+app.use(cors());
 
-
+// Criar usuário
 app.post('/usuarios', async (req, res) => {
+  const { email, name, age } = req.body;
 
-    await prisma.user.create({
+  if (!email || !name || !age) {
+    return res.status(400).json({ message: "Todos os campos são obrigatórios." });
+  }
 
-        data: {
-            email: req.body.email,
-            name: req.body.name,
-            age: req.body.age
-        }
+  try {
+    const user = await prisma.user.create({
+      data: { email, name, age }
+    });
+    res.status(201).json(user);
+  } catch (error) {
+    console.error("Erro ao criar usuário:", error);
+    res.status(500).json({ message: "Erro ao criar usuário" });
+  }
+});
 
-    })
-
-    res.status(201).json(req.body)
-})
-
-
+// Obter todos os usuários
 app.get('/usuarios', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Erro ao buscar usuários:", error);
+    res.status(500).json({ message: "Erro ao buscar usuários" });
+  }
+});
 
-    const users = await prisma.user.findMany()
-
-
-    res.status(200).json(users)
-})
-
-
+// Atualizar usuário
 app.put('/usuarios/:id', async (req, res) => {
+  const { email, name, age } = req.body;
 
-    await prisma.user.update({
-        where: {
-            id: req.params.id
-        },
-        data: {
-            email: req.body.email,
-            name: req.body.name,
-            age: req.body.age
-        }
+  try {
+    const user = await prisma.user.update({
+      where: { id: req.params.id },
+      data: { email, name, age }
+    });
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("Erro ao atualizar usuário:", error);
+    res.status(500).json({ message: "Erro ao atualizar usuário" });
+  }
+});
 
-    })
-})
-
-app.delete('/usuarios/:id', async (req, res) =>{
+// Deletar usuário
+app.delete('/usuarios/:id', async (req, res) => {
+  try {
     await prisma.user.delete({
-          where: {
-            id: req.params.id
-          }
-    
-    })
-
-    res.status(200).json({message: "Usuário deletado com Sucesso!"})
-})
-
-
-
-
-
-
-
+      where: { id: req.params.id }
+    });
+    res.status(200).json({ message: "Usuário deletado com sucesso!" });
+  } catch (error) {
+    console.error("Erro ao deletar usuário:", error);
+    res.status(500).json({ message: "Erro ao deletar usuário" });
+  }
+});
 
 app.listen(port, '0.0.0.0', () => {
-    console.log(`Servidor rodando em http://0.0.0.0:${port}`);
-  });
+  console.log(`Servidor rodando em http://0.0.0.0:${port}`);
+});
+
+
+
+
+
+
+
 
 
 
