@@ -7,7 +7,11 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'https://devclub-cadastro-usuarios.vercel.app/', // Substitua pelo domínio do seu frontend
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
+
 
 // Criar usuário
 app.post('/usuarios', async (req, res) => {
